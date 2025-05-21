@@ -10,7 +10,7 @@ import { Link } from '@inertiajs/vue3';
                   <h1>
                       <div class="text-white text-4xl mt-8">Tester vos compétences avec notre application</div><br>
                       <div class="font-bold text-white text-4xl">
-                          <span class="text-8xl">SKILL <br> POWER</span>
+                          <span class="text-8xl">LEVEL <br> SKILL</span>
                       </div>
                   </h1>
               </div>

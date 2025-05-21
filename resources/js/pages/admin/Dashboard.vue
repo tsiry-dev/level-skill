@@ -1,8 +1,16 @@
 <script setup>
+import SubTitle from '@/components/SubTitle.vue';
+import { usePage } from '@inertiajs/vue3';
+
+
+const page = usePage();
+
+console.log(page.props.auth.user);
+
 </script>
 
 <template>
-<h1>ADMIN DASHBOARD</h1>
+    <SubTitle>Statistiques</SubTitle>
 </template>
 
 <style scoped>

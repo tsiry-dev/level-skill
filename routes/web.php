@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\TestController as AdminTestController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
@@ -9,7 +10,12 @@ use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/admin', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+Route::group(['middleware' => 'admin', 'prefix' => 'admin', 'as' => 'admin.'], function() {
+    Route::get('', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('test-all', [AdminTestController::class, 'index'])->name('test.all');
+
+});
 
 Route::group(['middleware' => 'user', 'prefix' => 'account', 'as' => 'account.'], function() {
     Route::get('', [AccountController::class, 'index'])->name('index');
