@@ -1,0 +1,21 @@
+@import 'tailwindcss';
+/* @import "tailwindcss"; */
+@import "flyonui/variants.css";
+@source "../node_modules/flyonui/flyonui.js";
+@plugin "flyonui" {
+   themes: light --default, ghibli --prefersdark;
+}
+@import 'primeicons/primeicons.css';
+
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-family: monospace;
+    font-size: 150%
+}
+
