@@ -7,6 +7,10 @@ import { createApp, h } from 'vue';
 import { ZiggyVue } from 'ziggy-js';
 import { initializeTheme } from './composables/useAppearance';
 import Layout from './layouts/Layout.vue';
+import Vue3Toastify from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+
+
 
 
 
@@ -63,6 +67,7 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         createApp({ render: () => h(App, props) })
             .use(plugin)
+            .use(Vue3Toastify)
             .use(ZiggyVue)
             .mount(el);
     },

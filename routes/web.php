@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\Admin\ActivitiesController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\TestController as AdminTestController;
 use App\Http\Controllers\HomeController;
@@ -12,10 +13,34 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 
 Route::group(['middleware' => 'admin', 'prefix' => 'admin', 'as' => 'admin.'], function() {
-    Route::get('', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('test-all', [AdminTestController::class, 'index'])->name('test.all');
+    Route::get('', [DashboardController::class, 'index'])
+          ->name('dashboard');
 
+    //TEST
+    Route::get('test-all', [AdminTestController::class, 'index'])
+          ->name('test.all');
+
+    Route::get('test/create', [AdminTestController::class, 'create'])
+          ->name('test.create');
+
+    Route::post('test/create', [AdminTestController::class, 'store'])
+          ->name('test.store');
+
+    Route::get('test/{activity}', [ActivitiesController::class, 'show'])
+          ->name('activitie.show');
+
+    //ACTIVITY
+    Route::post('activity/{activity}', [ActivitiesController::class, 'store'])
+          ->name('activityType.store');
+
+    Route::post('test/{activity}/{activityType}', [ActivitiesController::class, 'showActivityType'])
+          ->name('activityType.show');
+
+    Route::delete('test/{activity}/{activityType}', [ActivitiesController::class, 'destroy'])
+          ->name('activityType.destroy');
 });
+
+
 
 Route::group(['middleware' => 'user', 'prefix' => 'account', 'as' => 'account.'], function() {
     Route::get('', [AccountController::class, 'index'])->name('index');
