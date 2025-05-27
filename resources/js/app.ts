@@ -8,9 +8,13 @@ import { ZiggyVue } from 'ziggy-js';
 import { initializeTheme } from './composables/useAppearance';
 import Layout from './layouts/Layout.vue';
 import Vue3Toastify from 'vue3-toastify';
+import { createPinia } from 'pinia'
 import 'vue3-toastify/dist/index.css';
+import 'flyonui';
+// import 'flyonui/dist/accordion.js';
 
 
+const pinia = createPinia();
 
 
 
@@ -69,6 +73,7 @@ createInertiaApp({
             .use(plugin)
             .use(Vue3Toastify)
             .use(ZiggyVue)
+            .use(pinia)
             .mount(el);
     },
     progress: {

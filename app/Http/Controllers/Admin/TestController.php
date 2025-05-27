@@ -21,7 +21,12 @@ class TestController extends Controller
 
     public function create()
     {
-        return inertia('admin/tests/Create');
+
+        $categoryTests = \App\Models\CategoryTest::all();
+
+        return inertia('admin/tests/Create', [
+            'categoryTests' => $categoryTests
+        ]);
     }
 
     public function store(Request $request)
@@ -29,6 +34,7 @@ class TestController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
+            'category_test_id' => 'required|exists:category_tests,id',
         ]);
 
         Activities::create([
@@ -37,6 +43,6 @@ class TestController extends Controller
             'description' => $request->description,
         ]);
 
-        return to_route('admin.test.create');
+        return to_route('admin.tests.create');
     }
 }

@@ -11,6 +11,15 @@ class Question extends Model
     use HasFactory;
 
 
+    protected $fillable = [
+        'activity_type_id',
+        'question',
+        'point',
+        'timer',
+        'is_response_ia',
+    ];
+
+
     public function answers()
     {
         return $this->hasMany(Answer::class, 'question_id');

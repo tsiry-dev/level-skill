@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Activities;
 use App\Models\ActivityType;
 use App\Models\Answer;
+use App\Models\CategoryTest;
 use App\Models\Question;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -26,13 +27,30 @@ class DatabaseSeeder extends Seeder
              'role' => 'admin'
          ]);
 
-         DB::table('activities')->insert(Activities::ACTIVITIES);
 
+
+         $categoryTests = CategoryTest::CATEGORYTEST;
+
+         foreach ($categoryTests as $categoryTest) {
+             CategoryTest::create([
+                 'name' => $categoryTest['name'],
+                 'slug' => $categoryTest['slug'],
+             ]);
+         }
+
+        DB::table('activities')->insert(Activities::ACTIVITIES);
 
         // Récupère toutes les activités insérées
         $activities = Activities::all();
 
+        $activities->each(function ($activity) {
+            // Associe chaque activité à une catégorie de test aléatoire
+            $activity->categoryTest()->associate(CategoryTest::inRandomOrder()->first());
+            $activity->save();
+        });
+
         foreach ($activities as $activity) {
+
             // Crée entre 2 et 4 ActivityTypes pour chaque activité
             ActivityType::factory(mt_rand(2, 4))->create([
                 'activity_id' => $activity->id,

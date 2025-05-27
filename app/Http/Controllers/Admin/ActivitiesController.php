@@ -13,45 +13,32 @@ class ActivitiesController extends Controller
     public function show(?Activities $activity)
     {
 
-       $activity->load('activityTypes');
+       $activity->load([
+            'activityTypes',
+       ]);
+
 
        return inertia('admin/tests/Show', [
             'activity' => $activity
        ]);
     }
 
-    public function showActivityType(Activities $activity, ActivityType $activityType)
+    public function update(Request $request, Activities $activity)
     {
 
-        $activityType->load('questions.answers');
-
-        return inertia('admin/activities/Show', [
-            'activityType' => $activityType
+        $activity->update([
+            'title' => $request->name,
+            'slug' => Activities::slug($request->name),
         ]);
+
+        return to_route('admin.tests.all');
     }
 
-    public function store(Request $request, Activities $activity)
+    public function remove(Activities $activity)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+        $activity->delete();
 
-        ActivityType::create([
-            'activity_id' => $activity->id,
-            'name' => $request->name,
-            'slug' => ActivityType::slug($request->name),
-        ]);
-
-         return to_route('admin.activitie.show',  $activity)
-           ->with('success', 'Type d\'activité créé avec succès');
+        return to_route('admin.tests.all', $activity);
     }
 
-    public function destroy(Activities $activity, ActivityType $activityType)
-    {
-
-        $activityType->delete();
-
-        return to_route('admin.activitie.show',  $activity)
-           ->with('success', 'Type d\'activité supprimé avec succès');
-    }
 }

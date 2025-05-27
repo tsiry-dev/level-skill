@@ -2,8 +2,12 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Admin\ActivitiesController;
+use App\Http\Controllers\Admin\ActivityTypeController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\QuestionsController;
+use App\Http\Controllers\Admin\ResponseController;
 use App\Http\Controllers\Admin\TestController as AdminTestController;
+use App\Http\Controllers\CategoryTestController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
@@ -17,27 +21,58 @@ Route::group(['middleware' => 'admin', 'prefix' => 'admin', 'as' => 'admin.'], f
           ->name('dashboard');
 
     //TEST
-    Route::get('test-all', [AdminTestController::class, 'index'])
-          ->name('test.all');
+    Route::get('test', [AdminTestController::class, 'index'])
+          ->name('tests.all');
 
     Route::get('test/create', [AdminTestController::class, 'create'])
-          ->name('test.create');
+          ->name('tests.create');
 
     Route::post('test/create', [AdminTestController::class, 'store'])
-          ->name('test.store');
+          ->name('tests.store');
 
     Route::get('test/{activity}', [ActivitiesController::class, 'show'])
-          ->name('activitie.show');
+          ->name('activities.show');
 
     //ACTIVITY
-    Route::post('activity/{activity}', [ActivitiesController::class, 'store'])
-          ->name('activityType.store');
+    Route::delete('activity/{activity}', [ActivitiesController::class, 'remove'])
+          ->name('activities.remove');
 
-    Route::post('test/{activity}/{activityType}', [ActivitiesController::class, 'showActivityType'])
-          ->name('activityType.show');
+    Route::patch('activity/{activity}', [ActivitiesController::class, 'update'])
+          ->name('activities.update');
 
-    Route::delete('test/{activity}/{activityType}', [ActivitiesController::class, 'destroy'])
-          ->name('activityType.destroy');
+
+    //ACTIVITYTYPE
+    Route::post('activity/{activity}', [ActivityTypeController::class, 'store'])
+          ->name('activityTypes.store');
+
+    Route::post('test/{activity}/{activityType}', [ActivityTypeController::class, 'showActivityType'])
+          ->name('activityTypes.show');
+
+    Route::delete('test/{activity}/{activityType}', [ActivityTypeController::class, 'destroy'])
+          ->name('activityTypes.destroy');
+
+    Route::patch('test/{activity}/{activityType}', [ActivityTypeController::class, 'update'])
+          ->name('activityTypes.update');
+
+    //QUESTIONS
+    Route::get('test/{activities}/{activityType}', [QuestionsController::class, 'show'])
+          ->name('questions.show');
+
+    Route::post('activityTypes/{activityType}', [QuestionsController::class, 'store'])
+          ->name('questions.store');
+
+    //RESPONSES
+    Route::post('responses/{activityType}', [ResponseController::class, 'store'])
+          ->name('responses.store');
+
+    Route::delete('responses/{answer}', [ResponseController::class, 'remove'])
+          ->name('responses.remove');
+
+    //CATEGORIESTEST
+    Route::get('categories', [CategoryTestController::class, 'index'])
+          ->name('categories.index');
+
+
 });
 
 

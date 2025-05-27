@@ -9,4 +9,10 @@ class Answer extends Model
 {
     /** @use HasFactory<\Database\Factories\AnswerFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'question_id',
+        'answer',
+        'is_correct',
+    ];
 }

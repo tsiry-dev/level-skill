@@ -5,6 +5,7 @@ namespace App\Models;
 use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Activities extends Model
 {
@@ -50,4 +51,16 @@ class Activities extends Model
     {
         return $this->hasMany(ActivityType::class, 'activity_id');
     }
+
+    public static function slug(string $value)
+    {
+
+        return \Illuminate\Support\Str::slug($value) . '-' .mt_rand(785, 15685) . time();
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(CategoryTest::class, 'category_test_id');
+    }
+
 }

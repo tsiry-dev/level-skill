@@ -1,16 +1,29 @@
 <script setup>
 import SubTitle from '@/components/SubTitle.vue';
 import { Link, useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import { toast } from "vue3-toastify";
+
+
+const props = defineProps({
+    categoryTests: Array,
+    errors: Object,
+    auth: Object,
+    ziggy: Object,
+});
+
+const categoryTests = ref(props.categoryTests || []);
+
 
 const form = useForm({
     title: '',
-    description: ''
+    description: '',
+    type: '',
 });
 
 const submit = () => {
 
-  form.post(route('admin.test.store'), {
+  form.post(route('admin.tests.store'), {
     onSuccess: () => {
         toast("Nouveau test créé avec succès", {
             "theme": "colored",
@@ -25,6 +38,8 @@ const submit = () => {
   form.reset();
 }
 
+
+
 </script>
 
 <template>
@@ -33,13 +48,28 @@ const submit = () => {
         Nouveau test
     </SubTitle>
 
-    <Link :href="route('admin.test.all')" class="btn btn-gradient btn-secondary">Retour</Link>
+    <Link :href="route('admin.tests.all')" class="btn btn-gradient btn-secondary">Retour</Link>
 </div>
 
 <div>
    <form @submit.prevent="submit" class="mt-5">
         <div class="input-floating max-w-150 mb-5">
             <input v-model="form.title" type="text" placeholder="Nom du type de test..." class="input" id="floatingInput" />
+            <label class="input-floating-label" for="floatingInput">Nom du test</label>
+            <span class="text-red-500 text-sm" v-if="form.errors.title">{{ form.errors.title }}</span>
+        </div>
+
+        <div class="input-floating max-w-150 mb-5">
+            <select name="" id="" class="input" v-model="form.type">
+                <option value="">Selectionner un type de test</option>
+                <option
+                    v-for="category in categoryTests"
+                    :value="category.id"
+                    :key="category.id"
+                >
+                    {{ category.name }}
+                </option>
+            </select>
             <label class="input-floating-label" for="floatingInput">Nom du test</label>
             <span class="text-red-500 text-sm" v-if="form.errors.title">{{ form.errors.title }}</span>
         </div>

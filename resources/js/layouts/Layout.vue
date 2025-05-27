@@ -1,4 +1,5 @@
 <script setup>
+import Modal from '@/components/Modal.vue';
 import Sidebar from '@/components/Sidebar.vue';
 
 const props = defineProps({
@@ -10,6 +11,7 @@ const props = defineProps({
   sidebarOpen: Boolean,
 });
 
+
 </script>
 
 
@@ -20,6 +22,8 @@ const props = defineProps({
 <main class="p-4 sm:ml-64">
     <slot />
 </main>
+
+
 </template>
 
 <style scoped>

@@ -1,11 +1,15 @@
 @import 'tailwindcss';
+
 /* @import "tailwindcss"; */
-@import "flyonui/variants.css";
-@source "../node_modules/flyonui/flyonui.js";
+
 @plugin "flyonui" {
    themes: light --default, ghibli --prefersdark;
 }
 @import 'primeicons/primeicons.css';
+
+@import "flyonui/variants.css";
+
+
 
 
 *,
