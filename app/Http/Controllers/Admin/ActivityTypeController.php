@@ -50,6 +50,14 @@ class ActivityTypeController extends Controller
         return to_route('admin.activities.show', $activity);
     }
 
+
+    public function updateStatus(ActivityType $activityType)
+    {
+        $activityType->status = !$activityType->status;
+        $activityType->save();
+
+    }
+
     public function destroy(Activities $activity, ActivityType $activityType)
     {
 

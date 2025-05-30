@@ -40,6 +40,12 @@ class ActivityType extends Model
         return $this->belongsTo(ActivityType::class);
     }
 
+
+    public function activities()
+    {
+        return $this->belongsTo(Activities::class);
+    }
+
     public function questions()
     {
         return $this->hasMany(Question::class, 'activity_type_id');

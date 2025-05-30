@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder
 
         $activities->each(function ($activity) {
             // Associe chaque activité à une catégorie de test aléatoire
-            $activity->categoryTest()->associate(CategoryTest::inRandomOrder()->first());
+            $activity->categoryTest()->associate(CategoryTest::all()->random());
             $activity->save();
         });
 

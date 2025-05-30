@@ -102,27 +102,7 @@ const handleCreateQuestion = () => {
 };
 
 const handleCreateResponse = (question) => {
-    const index = questions.value.findIndex((q) => q.id === question.id);
 
-
-    const responses = [
-        response1.value,
-        response2.value,
-        response3.value,
-        response4.value
-    ].filter(response => response.answer.trim() !== '');
-
-    // responses.map((response) => {
-    //     questions.value[index].answers.push(response);
-    // });
-
-
-    const data = responses.map((response, index) => {
-        return {
-            answer: response.answer,
-            is_correct: response.answer === correctResponse.value,
-        };
-    });
 
     if(
         !response1.value.answer.trim() &&
@@ -138,6 +118,30 @@ const handleCreateResponse = (question) => {
         });
         return;
     }
+
+
+
+    let responses = [
+        response1.value,
+        response2.value,
+        response3.value,
+        response4.value
+    ].filter(response => response.answer.trim() !== '');
+
+    // const index = questions.value.findIndex((q) => q.id === question.id);
+
+    // responses.map((res, index) => {
+    //     questions.value[index]?.answers?.push(res);
+    // });
+
+
+    const data = responses.map((response, index) => {
+        return {
+            answer: response.answer,
+            is_correct: response.answer === correctResponse.value,
+        };
+    });
+
 
     formResponse.post(route('admin.responses.store', {
         activityType: question,
@@ -191,6 +195,7 @@ const handleRemoveResponse = (response, index) => {
          preserveState: true,
      });
 };
+
 
 </script>
 

@@ -15,6 +15,7 @@ class ActivitiesController extends Controller
 
        $activity->load([
             'activityTypes',
+            'categoryTest'
        ]);
 
 

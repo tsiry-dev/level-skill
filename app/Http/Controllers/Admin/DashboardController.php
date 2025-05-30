@@ -3,12 +3,21 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Activities;
+use App\Models\CategoryTest;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        return inertia('admin/Dashboard');
+
+       $categoryTest = CategoryTest::all();
+       $categoryTest->load('activities');
+
+
+        return inertia('admin/Dashboard', [
+            'categories' => $categoryTest,
+        ]);
     }
 }

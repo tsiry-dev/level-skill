@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('activities', function (Blueprint $table) {
             $table->foreignId('category_test_id')
-                    ->after('created_by')
+                    ->after('id')
                     ->nullable()
                     ->constrained('category_tests')
                     ->cascadeOnDelete();

@@ -20,11 +20,10 @@ class ActivitiesFactory extends Factory
 
         $users = User::all();
         $title = fake()->sentence(1, true);
-        $categoryTest = \App\Models\CategoryTest::all();
+         $categoryTestIds = \App\Models\CategoryTest::pluck('id')->toArray();
 
         return [
-            'created_by' => $users->unique()->random()->id,
-            'category_test_id' => fake()->randomElement($categoryTest->random()->id),
+            'category_test_id' => fake()->randomElement($categoryTestIds),
             'slug' => \Illuminate\Support\Str::slug($title) . '-' . time(),
             'description' => fake()->sentences(3, true)
         ];

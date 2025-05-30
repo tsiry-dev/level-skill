@@ -1,5 +1,20 @@
 <script setup>
 import { Head } from '@inertiajs/vue3';
+
+
+const props = defineProps({
+    resultats: Array,
+    user: Object,
+    errors: Object,
+    name: String,
+    quote: Object,
+    auth: Object,
+    ziggy: Object,
+    sidebarOpen: Boolean,
+});
+
+console.log(props.resultats);
+
 </script>
 
 <template>
@@ -9,27 +24,18 @@ import { Head } from '@inertiajs/vue3';
   <table class="table">
     <thead>
       <tr>
-        <th>Type</th>
         <th>Category</th>
+        <th>Test</th>
         <th>Points</th>
-        <th>Actions</th>
-        <th>Actions</th>
+        <th>Temps</th>
       </tr>
     </thead>
     <tbody>
-      <tr>
+      <tr v-for="resultat in resultats" :key="resultat.id">
         <td>Quiz</td>
-        <td>Conjugaison</td>
-        <td><span class="badge badge-soft badge-success text-xs">12</span></td>
-        <td>March 1, 2024</td>
-        <td>
-          <button class="btn btn-circle btn-text btn-sm" aria-label="Action button">
-            <i class="pi pi-pen-to-square"></i>
-          </button>
-          <button class="btn btn-circle btn-text btn-sm" aria-label="Action button">
-            <i class="pi pi-trash"></i>
-          </button>
-        </td>
+        <td>{{ resultat.activity_type.name }}</td>
+        <td><span class="badge badge-soft badge-success text-xs">{{ resultat.total }}</span></td>
+        <td><span class="badge badge-soft badge-success text-xs">60 s</span></td>
       </tr>
     </tbody>
   </table>

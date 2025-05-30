@@ -78,16 +78,21 @@ const handleUpdateActivityType = (activity) => {
         Liste des tests
     </SubTitle>
 
-    <Link :href="route('admin.tests.create')" class="btn btn-gradient btn-secondary">Nouveau</Link>
+    <Link :href="route('admin.tests.create')" class="btn btn-gradient btn-secondary">
+        <i class="pi pi-plus text-white"></i>
+       Nouveau
+    </Link>
 </div>
 
 <div class="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3">
     <div v-for="activity in props.activities" :key="activity.id">
 
         <div>
-            <div class="bg-green-500 p-5 rounded-2xl ">
+            <div class="bg-green-400 p-5 rounded-2xl ">
                 <div class="flex justify-end mb-4">
-                    <span class="bg-white px-3 py-1 text-sm rounded-sm">categ</span>
+                    <span class="bg-white px-3 py-1 text-sm rounded-sm">
+                        {{ activity.category_test?.name }}
+                    </span>
                 </div>
                 <div class="text-black flex items-center justify-between">
                     <div v-if="activityEdit === activity">

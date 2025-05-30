@@ -13,6 +13,7 @@ class Activities extends Model
     use HasFactory;
 
     protected $fillable = [
+        'category_test_id',
         'title',
         'slug',
         'description'
@@ -58,7 +59,7 @@ class Activities extends Model
         return \Illuminate\Support\Str::slug($value) . '-' .mt_rand(785, 15685) . time();
     }
 
-    public function category(): BelongsTo
+    public function categoryTest(): BelongsTo
     {
         return $this->belongsTo(CategoryTest::class, 'category_test_id');
     }

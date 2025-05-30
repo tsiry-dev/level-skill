@@ -45,40 +45,45 @@ const logout = () => {
            <div v-if="user?.role !== 'admin'">
                 <li>
                     <Link :href="route('account.index')" class="text-lg flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <i class="pi pi-chart-line"></i>&nbsp; Statistiques
+                        <i class="pi pi-chart-bar"></i>&nbsp; Statistiques
                     </Link>
                 </li>
                 <li>
                     <Link :href="route('account.test')" class="text-lg flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <i class="pi pi-book"></i>&nbsp; Mes tests
+                        <i class="pi pi-lists"></i>&nbsp; Résultats
                     </Link>
                 </li>
                 <li>
                     <Link :href="route('account.test.all')" class="text-lg flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <i class="pi pi-sparkles"></i>&nbsp; Liste des tests
+                        <i class="pi pi-sparkles"></i>&nbsp; Tets à faires
                     </Link>
+                </li>
+                 <li>
+                    <button @click="logout" class="text-lg flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <i class="pi pi-sign-out"></i>&nbsp; Déconexion
+                    </button>
                 </li>
             </div>
 
             <div v-else>
                 <li>
                     <Link :href="route('admin.dashboard')" class="text-lg flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <i class="pi pi-sign-out"></i>&nbsp; Statistiques
+                        <i class="pi pi-chart-bar"></i>&nbsp; Statistiques
                     </Link>
                 </li>
                 <li>
                     <Link :href="route('admin.tests.all')" class="text-lg flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <i class="pi pi-sign-out"></i>&nbsp; Tests
+                        <i class="pi pi-book"></i>&nbsp; Tests
                     </Link>
                 </li>
                 <li>
-                    <Link :href="route('admin.tests.all')" class="text-lg flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <i class="pi pi-sign-out"></i>&nbsp; Categories
+                    <Link :href="route('admin.categories.index')" class="text-lg flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <i class="pi pi-list"></i>&nbsp; Categories
                     </Link>
                 </li>
                 <li>
-                    <Link :href="route('account.test.all')" class="text-lg flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <i class="pi pi-sign-out"></i>&nbsp; Eleves
+                    <Link :href="route('admin.students')" class="text-lg flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <i class="pi pi-users"></i>&nbsp; Eleves
                     </Link>
                 </li>
                 <li>

@@ -42,6 +42,11 @@ class CategoryTest extends Model
 
     public function activities(): HasMany
     {
-        return $this->hasMany(ActivityType::class);
+        return $this->hasMany(Activities::class, 'category_test_id');
+    }
+
+    public function activityType(): HasMany
+    {
+        return $this->hasMany(ActivityType::class, 'activity_id');
     }
 }

@@ -105,6 +105,51 @@ const handleUpdateActivityType = (activity) => {
     activityTypeEdit.value = null;
 };
 
+
+const updateStatus = (activity) => {
+
+    form.patch(route('admin.activityTypes.updateStatus', {
+        activity: activityItem.value.slug,
+        activityType: activity.slug
+    }), {
+        onSuccess: () => {
+
+            if(activity.status === 1){
+                toast("Test désactivé avec succès", {
+                    theme: "colored",
+                    type: "error",
+                    autoClose: 3000,
+                    dangerouslyHTMLString: true
+                });
+            }else {
+                toast("Test activé avec succès", {
+                    theme: "colored",
+                    type: "success",
+                    autoClose: 3000,
+                    dangerouslyHTMLString: true
+                });
+            }
+
+
+
+            activityTypeEdit.value = null;
+            form.reset();
+        },
+        onError: () => {
+            toast("Erreur lors de la mise à jour", {
+                theme: "colored",
+                type: "error",
+                autoClose: 3000,
+                dangerouslyHTMLString: true
+            });
+        },
+        preserveState: false,
+    });
+
+    form.reset();
+
+};
+
 console.log(activityTypes);
 
 
@@ -121,7 +166,10 @@ console.log(activityTypes);
         <p>Ajouter des exercices</p>
     </div>
 
-    <Link :href="route('admin.tests.all')"  class="btn btn-gradient btn-secondary">Retour</Link>
+    <Link :href="route('admin.tests.all')"  class="btn btn-gradient btn-secondary">
+    <i class="pi pi-left"></i>
+       Retour
+    </Link>
 </div>
 
 <div class="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -138,7 +186,13 @@ console.log(activityTypes);
                    <span class="text-red-500 text-sm" v-if="!activityTypeEdit.name">Champs vide!!</span>
                 </div>
 
-                <div v-else>
+                <div v-else class="flex gap-2 items-center">
+                    <span
+                     @click.prevent="updateStatus(activity)"
+                    :class="`cursor-pointer ${activity.status ? 'text-green-500' : 'text-red-600'}`">
+                        <i class="pi pi-unlock" v-if="activity.status"></i>
+                        <i class="pi pi-lock" v-else></i>
+                    </span>
                    <Link
                     :href="route('admin.questions.show', {
                         activities: activityItem.slug,

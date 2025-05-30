@@ -13,12 +13,16 @@ return new class extends Migration
     {
         Schema::create('activity_types', function (Blueprint $table) {
             $table->id();
+
             $table->foreignId('activity_id')
                  ->nullable()
                   ->constrained('activities')
                   ->cascadeOnDelete();
+
             $table->string('name');
             $table->string('slug')->unique();
+
+            $table->boolean('status')->default(false);
             $table->timestamps();
         });
 
