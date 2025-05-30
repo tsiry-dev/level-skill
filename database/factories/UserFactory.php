@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Formateur;
+use App\Models\Niveau;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -23,10 +25,16 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+
+
+        $formateur = Formateur::all();
+        $niveaux = Niveau::all();
         $name = fake()->name();
 
         return [
             'name' => $name,
+            'formateur_id' => $formateur->random()->id,
+            'niveau_id' => $niveaux->random()->id,
             'slug' => Str::slug($name) . '-' . time(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),

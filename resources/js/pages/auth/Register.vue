@@ -7,13 +7,25 @@ import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
+import { computed } from 'vue';
+
+const props = defineProps({
+    formateurs: Array,
+    niveaux: Array,
+});
 
 const form = useForm({
     name: '',
     email: '',
     password: '',
     password_confirmation: '',
+    formateur_id: '',
+    niveau_id: '',
 });
+
+const formateurs = computed(() => props.formateurs);
+const niveaux = computed(() => props.niveaux);
+
 
 const submit = () => {
     form.post(route('register'), {
@@ -39,6 +51,41 @@ const submit = () => {
                     <Input id="email" type="email" required :tabindex="2" autocomplete="email" v-model="form.email" placeholder="email@example.com" />
                     <InputError :message="form.errors.email" />
                 </div>
+
+            <div>
+                <Label for="niveau">Niveaux</Label>
+                <select
+                    name="niveau_id"
+                    id="niveau"
+                    class="input mt-2"
+                    v-model="form.niveau_id"
+                    required
+                >
+                    <option disabled value="">-- Choisissez un niveau --</option>
+                    <option v-for="niveau in niveaux" :key="niveau.id" :value="niveau.id">
+                        {{ niveau.libelle || niveau.id }}
+                    </option>
+                </select>
+                <InputError :message="form.errors.niveau_id" />
+            </div>
+
+            <div>
+                <Label for="formateur">Formateurs</Label>
+                <select
+                    name="formateur_id"
+                    id="formateur"
+                    class="input mt-2"
+                    v-model="form.formateur_id"
+                    required
+                >
+                    <option disabled value="">-- Choisissez un formateur --</option>
+                    <option v-for="formateur in formateurs" :key="formateur.id" :value="formateur.id">
+                        {{ formateur.name }}
+                    </option>
+                </select>
+                <InputError :message="form.errors.formateur_id" />
+            </div>
+
 
                 <div class="grid gap-2">
                     <Label for="password">Mot de passe</Label>

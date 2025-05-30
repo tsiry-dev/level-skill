@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Formateur;
+use App\Models\Niveau;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -21,7 +23,12 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('auth/Register');
+
+
+        return Inertia::render('auth/Register', [
+            'formateurs' => Formateur::all(),
+            'niveaux' => Niveau::all(),
+        ]);
     }
 
     /**
@@ -35,13 +42,19 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'formateur_id' => 'required|exists:formateurs,id',
+            'niveau_id' => 'required|exists:niveaux,id',
         ]);
+
 
         $user = User::create([
             'name' => $request->name,
             'slug' => Str::slug($request->name) . '-'. time() . mt_rand(145, 89521),
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'niveau_id' => $request->niveau_id,
+            'formateur_id' => $request->formateur_id,
+            'remember_token' => Str::random(10),
         ]);
 
         event(new Registered($user));

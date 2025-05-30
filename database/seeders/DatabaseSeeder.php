@@ -6,6 +6,8 @@ use App\Models\Activities;
 use App\Models\ActivityType;
 use App\Models\Answer;
 use App\Models\CategoryTest;
+use App\Models\Formateur;
+use App\Models\Niveau;
 use App\Models\Question;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -19,12 +21,33 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(10)->create();
+
+
+       foreach(Formateur::FORMATEURS as $formateur)
+       {
+           Formateur::create([
+               'name' => $formateur['name'],
+               'slug' => $formateur['slug'],
+               'profile' => $formateur['profile'],
+           ]);
+       }
+
+       foreach(Niveau::NIVAUX as $niveau)
+       {
+           Niveau::create([
+              'title' => $niveau['title'],
+              'slug' => $niveau['slug'],
+           ]);
+       }
+
+        User::factory(80)->create();
 
          User::factory()->create([
              'name' => 'admin',
              'email' => 'admin@gmail.com',
-             'role' => 'admin'
+             'role' => 'admin',
+             'niveau_id' => null,
+             'formateur_id' => null,
          ]);
 
 
