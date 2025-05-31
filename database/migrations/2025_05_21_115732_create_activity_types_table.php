@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
 
+            $table->integer('nb_question')->default(10);
+
             $table->boolean('status')->default(false);
             $table->timestamps();
         });

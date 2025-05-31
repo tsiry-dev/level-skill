@@ -3,10 +3,12 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { Link, useForm } from '@inertiajs/vue3';
 import { toast } from 'vue3-toastify';
 import { router } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 const props = defineProps({
     activityType: Object,
     activities: Object,
+    questions: Array,
     user: Object,
     activityTypeStory: Array,
     errors: Object,
@@ -19,7 +21,7 @@ const props = defineProps({
 
 const form = useForm();
 
-const questions = ref(props.activityType?.questions || []);
+const questions = computed(() => props.questions || [   ]);
 const isStarted = ref(false);
 const questionIndex = ref(JSON.parse(localStorage.getItem('questionIndex')) || 0);
 const selectedIndex = ref(null);
@@ -28,6 +30,9 @@ const timer = ref(JSON.parse(localStorage.getItem('timer')) || 10);
 let interval = null;
 
 const selectedAnswer = ref(null);
+
+console.log(questions.value);
+
 
 
 localStorage.setItem('total', localStorage.getItem('total') || 0);
@@ -58,6 +63,11 @@ const handleStart = () => {
     localStorage.setItem('questionIndex', questionIndex.value);
     localStorage.setItem('timer', timer.value);
 
+    total.value = 0;
+    localStorage.setItem('total', 0);
+    selectedAnswer.value = null;
+
+
     startTimer();
 };
 
@@ -79,48 +89,54 @@ const startTimer = () => {
 
 const goToNextQuestion = () => {
     clearInterval(interval);
-    selectedIndex.value = null;
 
+    // Vérifie la réponse de la question actuelle AVANT de passer à la suivante
+    const currentQuestion = questions.value[questionIndex.value];
 
+    if (!selectedAnswer.value) {
+        toast("😓 Oups! Veuillez sélectionner une réponse", {
+            theme: "colored",
+            type: "error",
+            autoClose: 2000,
+            dangerouslyHTMLString: true,
+        });
+
+        // Pénalise si aucune réponse sélectionnée
+        total.value -= 1;
+    } else if (selectedAnswer.value.is_correct) {
+        total.value += currentQuestion?.point || 1;
+    }
+
+    localStorage.setItem('total', JSON.stringify(total.value));
+    selectedAnswer.value = null;
+
+    // Passe à la prochaine question
     if (questionIndex.value < questions.value.length - 1) {
         questionIndex.value++;
         localStorage.setItem('questionIndex', questionIndex.value);
-        localStorage.setItem('timer', JSON.stringify(questions.value[questionIndex.value]?.timer || 10));
+
+        const nextTimer = questions.value[questionIndex.value]?.timer || 10;
+        timer.value = nextTimer;
+        localStorage.setItem('timer', nextTimer);
+
         startTimer();
-
-
-       if(selectedAnswer.value.is_correct === 1)
-       {
-           total.value += questions.value[questionIndex.value]?.point;
-           localStorage.setItem('total', JSON.stringify(total.value));
-       }else {
-
-           total.value = JSON.parse(localStorage.getItem('total'));
-           localStorage.setItem('total', JSON.stringify(total.value));
-       }
-
-
-
-
     } else {
+        // Fin du test
         isFinished.value = true;
         isStarted.value = false;
-        localStorage.setItem('isFinished', true); // ✅ sauve l'état fini
-
-        // Nettoyer le reste si tu veux
+        localStorage.setItem('isFinished', true);
         localStorage.removeItem('questionIndex');
         localStorage.removeItem('timer');
 
+        // Enregistrement des résultats
         form.post(route('account.test.storeTestStory', props.activityType), {
             onSuccess: () => {
                 toast("Test sauvegardé avec succès", {
                     theme: "colored",
                     type: "success",
                     autoClose: 3000,
-                    dangerouslyHTMLString: true
                 });
             },
-            preserveState: false,
         });
 
         form.post(route('account.test.submission', {
@@ -128,21 +144,20 @@ const goToNextQuestion = () => {
             total: total.value,
         }), {
             onSuccess: () => {
-                toast("Test sauvegardé avec succès", {
+                toast("Résultat soumis", {
                     theme: "colored",
                     type: "success",
                     autoClose: 3000,
-                    dangerouslyHTMLString: true
                 });
 
+                // Reset complet
                 localStorage.setItem('total', 0);
                 localStorage.setItem('isFinished', false);
-
             },
-            preserveState: false,
         });
     }
 };
+
 
 const handleSetIsFinishedFalse = () => {
     isFinished.value = false;
@@ -179,8 +194,15 @@ onMounted(() => {
         {{ activities?.title }}
     </Link>
     <span><i class="pi pi-arrow-right"></i></span>
-    <span>{{ activityType?.name }}</span>
+    <span>{{ activityType?.name }} |  Nombre des questions ({{ questions.length }})</span>
 </nav>
+
+<div>
+    <p class="text-sm">Vous avez {{ questions.length }} question à répondre <br>
+      chaque question a un timer de 10 à 30 secondes à peut prêt <br>
+      Si vous ne Choisissez pas, vous perdez un point <span class="bg-red-500 text-white p-1 rounded-sm">-1</span>
+    </p>
+</div>
 
 <main class="mt-10">
 
@@ -263,18 +285,37 @@ onMounted(() => {
                     </div>
                 </div>
 
-                <!-- Timer + points -->
+                <!-- Timer + Emoji -->
                 <div class="flex gap-4">
-                    <div
-
-                      :class="`${timer <= 5 ? 'bg-red-500' : 'bg-green-500'}  flex-1 flex items-center justify-center  text-white border-1 border-green-300 rounded-4xl shadow-2xl text-8xl`">
-                        {{ timer }}
-                    </div>
-                    <div class="flex-1 flex items-center justify-center bg-blue-100 border-1 border-green-300 rounded-4xl shadow-2xl text-5xl">
-                        Points: {{ questions[questionIndex]?.point }}
-                    </div>
+                <div
+                    class="flex-1 flex items-center justify-center text-white rounded-4xl shadow-2xl text-8xl border transition-all duration-300"
+                    :class="{
+                    'bg-green-500 border-green-300': timer > 8,
+                    'bg-yellow-500 border-yellow-300': timer > 5 && timer <= 8,
+                    'bg-orange-500 border-orange-300': timer > 3 && timer <= 5,
+                    'bg-red-500 border-red-300': timer <= 3
+                    }"
+                >
+                    {{ timer }}
                 </div>
+
+                <!---Emoji--->
+                <div
+                    class="flex-1 flex items-center justify-center text-white rounded-4xl shadow-2xl text-8xl border transition-all duration-300"
+                    :class="{
+                    'bg-green-500 border-green-300': timer > 8,
+                    'bg-yellow-500 border-yellow-300': timer > 5 && timer <= 8,
+                    'bg-orange-500 border-orange-300': timer > 3 && timer <= 5,
+                    'bg-red-500 border-red-300': timer <= 3
+                    }"
+                >
+                    {{ timer >= 8 ? '😉' : (timer >= 5 ? '😐' : (timer >= 3 ? '😓' : '💀')) }}
+                </div>
+                </div>
+
+
             </div>
+
         </div>
     </div>
 

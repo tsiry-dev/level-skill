@@ -50,6 +50,14 @@ class DatabaseSeeder extends Seeder
              'formateur_id' => null,
          ]);
 
+         User::factory()->create([
+             'name' => 'user',
+             'email' => 'user@gmail.com',
+             'role' => 'user',
+             'niveau_id' => 1,
+             'formateur_id' => 2,
+         ]);
+
 
 
          $categoryTests = CategoryTest::CATEGORYTEST;
@@ -78,7 +86,7 @@ class DatabaseSeeder extends Seeder
             ActivityType::factory(mt_rand(2, 4))->create([
                 'activity_id' => $activity->id,
             ])->each(function ($activityType) {
-                    Question::factory(mt_rand(8, 12))->create([
+                    Question::factory(mt_rand(50, 300))->create([
                         'activity_type_id' => $activityType->id,
                     ])->each(function ($question) {
                         $numAnswers = mt_rand(4, 6);

@@ -82,6 +82,11 @@ function highlightMatch(text) {
                     <div class="flex-1">
                         <h2 class="text-green-600 text-xl">Formateurs</h2>
                         <div class="flex flex-col gap-1">
+                            <Link
+                            :href="route('admin.students')"
+                            class="cursor-pointer">
+                                tous
+                            </Link>
                             <span v-for="formateur in formateurs" :key="formateur.id">
                                 <span @click="handleFilterByFormateur(formateur)" class="cursor-pointer">
                                      {{ formateur.name }}

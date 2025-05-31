@@ -42,6 +42,7 @@ const isActiveResponseForm = ref(false);
 const isQuestionActive = ref(null);
 const openQuestionIndex = ref(null);
 const findAnswerIsCorrect = ref(false);
+const isOpenModalLimitQuestion = ref(false);
 
 const correctResponse = ref('');
 
@@ -196,6 +197,10 @@ const handleRemoveResponse = (response, index) => {
      });
 };
 
+const handleToggleModalLimitQuestion = () => {
+    isOpenModalLimitQuestion.value = !isOpenModalLimitQuestion.value;
+}
+
 
 </script>
 
@@ -216,7 +221,7 @@ const handleRemoveResponse = (response, index) => {
     </div>
 
 
-    <div class="mt-4">
+    <div class="mt-4 mb-3">
         <button
             @click="isActiveForm = !isActiveForm"
             class="btn btn-gradient btn-success"
@@ -232,8 +237,20 @@ const handleRemoveResponse = (response, index) => {
         </button>
     </div>
 
+    <div @click="handleToggleModalLimitQuestion" class="flex items-center gap-2 cursor-pointer btn btn-gradient btn-error">
+        <i class="pi pi-exclamation-triangle"></i>
+        <span>
+            {{ isOpenModalLimitQuestion ? 'Fermer' : 'Limiter la question à répondre' }}
+        </span>
+    </div>
+
     <div class="mt-5">
-        <h2>Les questions ({{ questions.length }})</h2>
+        <h2>Questions ({{ questions.length }})</h2>
+        <h2>Questions actif ({{ activityType.nb_question }})
+            <span
+            @click="handleToggleModalLimitQuestion"
+            class="text-sm underline underline-offset-1 cursor-pointer text-blue-700">Mettre à jour</span>
+        </h2>
         <p class="text-sm">La somme des points doit egale à 20</p>
     </div>
 
@@ -450,6 +467,27 @@ const handleRemoveResponse = (response, index) => {
                 </div>
             </form>
         </div>
+    </div>
+
+
+    <div v-if="isOpenModalLimitQuestion" class="fixed w-[30rem] top-15 left-[50%] translate-x-[-50%] bg-white border-1 border-gray-400 z-10 p-4 rounded-lg">
+         <div class="flex justify-between">
+            <h2 class="text-lg">Limiter la question à répondre</h2>
+            <button @click="isOpenModalLimitQuestion=false" class="btn btn-gradient btn-error">Fermer</button>
+         </div>
+
+         <form class="mt-8">
+            <div>
+                <p for="" class="text-sm">
+                    Vous avez {{ questions.length }} Disponible,Limiter les ci dessous <i class="text-red-500 pi pi-info-circle"></i>
+                </p>
+                <input type="number" name="" class="input" placeholder="Limiter à" id="">
+            </div>
+
+            <div class="mt-3">
+                <button class="btn btn-gradient btn-success">Confirmer</button>
+            </div>
+         </form>
     </div>
 
 

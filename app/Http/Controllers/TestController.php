@@ -57,12 +57,22 @@ class TestController extends Controller
     public function showActivityType(Activities $activities,ActivityType $activityType)
     {
 
+        $nbQuestion = $activityType->nb_question;
+
+        // Charger aléatoirement les questions + leurs réponses
+        $questions = $activityType->questions()
+            ->inRandomOrder()
+            ->with('answers')
+            ->limit($nbQuestion)
+            ->get();
+
         $activityType->load([
             'questions.answers'
         ]);
 
         return inertia('account/ShowActivityType', [
             'activityType' => $activityType,
+            'questions' => $questions,
             'activities' => $activities,
             'user' => Auth::user(),
             'activityTypeStory' => DB::table('user_activitytype_story')->get(),

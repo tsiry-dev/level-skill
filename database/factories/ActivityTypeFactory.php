@@ -23,6 +23,7 @@ class ActivityTypeFactory extends Factory
             'activity_id' => $activities->unique()->random()->id,
             'name' => $name,
             'slug' => \Illuminate\Support\Str::slug($name),
+            'nb_question' => mt_rand(25, 60),
         ];
     }
 }
