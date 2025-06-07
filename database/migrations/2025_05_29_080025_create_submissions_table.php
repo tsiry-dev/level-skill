@@ -24,6 +24,8 @@ return new class extends Migration
 
             $table->integer('total')->default(0);
 
+            $table->string('time')->default(0);
+
             $table->timestamps();
         });
     }

@@ -13,11 +13,10 @@ class ActivitiesController extends Controller
     public function show(?Activities $activity)
     {
 
-       $activity->load([
-            'activityTypes',
-            'categoryTest'
-       ]);
-
+        $activity->load([
+             'activityTypes',
+             'categoryTest'
+        ]);
 
        return inertia('admin/tests/Show', [
             'activity' => $activity

@@ -1,5 +1,5 @@
 <script setup>
-import { router, Link } from '@inertiajs/vue3';
+import { router, Link , Head} from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { ref, watch } from 'vue';
 
@@ -21,11 +21,13 @@ console.log(props.students);
 const search = ref('');
 const byFormateur = ref('');
 const byNiveau = ref('');
+const status = ref('');
 
 const filters = computed(() => ({
   search: search.value,
   byFormateur: byFormateur.value,
   byNiveau: byNiveau.value,
+  status: status.value
 }));
 
 const formateur = computed(() => props.formateurs);
@@ -54,6 +56,14 @@ const handleFilterByNiveau = (niveau) => {
   });
 };
 
+const handleFilterByStatus = (statu) => {
+  status.value = statu;
+  router.get(route('admin.students'), filters.value, {
+    preserveState: true,
+    replace: true,
+  });
+};
+
 function changePage(url) {
   if (url) router.visit(url)
 }
@@ -70,6 +80,8 @@ function highlightMatch(text) {
 </script>
 
 <template>
+  <Head title="Students" />
+
   <div class="flex items-center justify-between mb-5">
     <h1>Listes</h1>
     <div class="flex gap-2 items-center">
@@ -79,6 +91,7 @@ function highlightMatch(text) {
                class="hidden absolute bg-white border-1 border-gray-300 w-[30rem]  z-10  top-8 right-0 p-2 rounded-lg ">
                 <h2 class="text-lg">filtrer par</h2>
                 <div class="flex">
+
                     <div class="flex-1">
                         <h2 class="text-green-600 text-xl">Formateurs</h2>
                         <div class="flex flex-col gap-1">
@@ -94,6 +107,7 @@ function highlightMatch(text) {
                             </span>
                         </div>
                     </div>
+
                     <div class="flex-1">
                         <h2 class="text-green-600 text-xl">Niveau</h2>
                         <div class="flex flex-col gap-1">
@@ -106,6 +120,20 @@ function highlightMatch(text) {
                             </span>
                         </div>
                     </div>
+
+                    <div class="flex-1 ">
+                        <h2 class="text-green-600 text-xl">Status</h2>
+                        <div class="flex flex-col gap-1">
+                            <span v-for="statu in ['terminer', 'non-terminer']">
+                                <span
+                                @click="handleFilterByStatus(statu)"
+                                class="cursor-pointe">
+                                     {{  statu  }}
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

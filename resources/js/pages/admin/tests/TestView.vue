@@ -1,6 +1,6 @@
 <script setup>
 import SubTitle from '@/components/SubTitle.vue';
-import { Link, useForm } from '@inertiajs/vue3';
+import { Link, useForm , Head} from '@inertiajs/vue3';
 import { toast } from 'vue3-toastify';
 import { ref } from 'vue';
 
@@ -72,6 +72,7 @@ const handleUpdateActivityType = (activity) => {
 </script>
 
 <template>
+    <Head title="Tests" />
 
 <div class="flex items-center justify-between">
     <SubTitle>

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -69,5 +71,39 @@ class User extends Authenticatable
     public function niveau(): BelongsTo
     {
         return $this->belongsTo(Niveau::class, 'niveau_id');
+    }
+
+    public function scopeFilter(Builder | QueryBuilder $query)
+    {
+
+          $query->where('role', '=', 'user');
+
+          $query->when(request('search') ?? null, function($query, $search) {
+              $query->where(function($q) use ($search) {
+                  $q->whereAny(['name', 'email'], 'LIKE', '%' . $search .'%');
+              });
+          });
+
+          $query->when(request('status') ?? false, function($query, $status) {
+                if ($status === 'terminer') {
+                    $query->whereHas('submissions'); // A au moins une soumission
+                } elseif ($status === 'non-terminer') {
+                    $query->whereDoesntHave('submissions'); // Aucune soumission
+                }
+          });
+
+          $query->when(request('byFormateur') ?? null, function($query, $byFormateur) {
+              $query->whereHas('formateur', function ($q) use ($byFormateur) {
+                   $q->where('slug', $byFormateur);
+              });
+          });
+
+          $query->when(request('byNiveau') ?? null, function($query, $byNiveau) {
+              $query->whereHas('niveau', function ($q) use ($byNiveau) {
+                   $q->where('slug', $byNiveau);
+              });
+          });
+
+          return $query;
     }
 }

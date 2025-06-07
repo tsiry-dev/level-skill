@@ -88,7 +88,6 @@ class TestController extends Controller
                 'user_id' => Auth::user()->id,
                 'activity_type_id' => $activityType->id,
             ]);
-
         }
 
     }
@@ -96,10 +95,13 @@ class TestController extends Controller
     public function submission(Request $request, ActivityType $activityType)
     {
 
+        $activityType->load(['questions']);
+
         DB::table('submissions')->insert([
             'user_id' => Auth::user()->id,
             'activity_type_id' => $activityType->id,
-            'total' => $request['total']
+            'total' => $request['total'],
+            'time' => $request['time']
         ]);
     }
 }

@@ -5,15 +5,15 @@ import { Link, useForm } from '@inertiajs/vue3';
 import { usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 
 const page = usePage();
-const user = ref(page.props.auth.user ?? null);
+const user = computed(() => page?.props?.auth?.user) ?? null;
 
 const logout = () => {
     router.post(route('logout'));
 }
-
 
 
 
@@ -42,8 +42,17 @@ const logout = () => {
                </Link>
             </li>
 
+            <li>
+               <span class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                 <i class="pi pi-user"></i>
+                  <span class="ms-3">
+                    {{  user.name ?? 'Anonyme' }}
+                  </span>
+               </span>
+            </li>
+
            <div v-if="user?.role !== 'admin'">
-                <li>
+              <!--  <li>
                     <Link :href="route('account.index')" class="text-lg flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                         <i class="pi pi-chart-bar"></i>&nbsp; Statistiques
                     </Link>
@@ -52,10 +61,10 @@ const logout = () => {
                     <Link :href="route('account.test')" class="text-lg flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                         <i class="pi pi-lists"></i>&nbsp; Résultats
                     </Link>
-                </li>
+                </li>  -->
                 <li>
                     <Link :href="route('account.test.all')" class="text-lg flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                        <i class="pi pi-sparkles"></i>&nbsp; Tets à faires
+                        <i class="pi pi-sparkles"></i>&nbsp; Tests
                     </Link>
                 </li>
                  <li>
@@ -72,6 +81,16 @@ const logout = () => {
                     </Link>
                 </li>
                 <li>
+                    <Link :href="route('admin.niveaux.index')" class="text-lg flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <i class="pi pi-gauge"></i>&nbsp; Niveaux
+                    </Link>
+                </li>
+                <li>
+                    <Link :href="route('admin.formateurs.index')" class="text-lg flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <i class="pi pi-user-edit"></i>&nbsp; Formateurs
+                    </Link>
+                </li>
+                <li>
                     <Link :href="route('admin.tests.all')" class="text-lg flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                         <i class="pi pi-book"></i>&nbsp; Tests
                     </Link>
@@ -84,6 +103,11 @@ const logout = () => {
                 <li>
                     <Link :href="route('admin.students')" class="text-lg flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                         <i class="pi pi-users"></i>&nbsp; Eleves
+                    </Link>
+                </li>
+                <li>
+                    <Link :href="route('admin.security.index')" class="text-lg flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <i class="pi pi-lock"></i>&nbsp; Sécurité
                     </Link>
                 </li>
                 <li>

@@ -16,7 +16,6 @@ class Question extends Model
         'question',
         'point',
         'timer',
-        'is_response_ia',
     ];
 
 

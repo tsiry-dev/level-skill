@@ -27,6 +27,7 @@ const questionIndex = ref(JSON.parse(localStorage.getItem('questionIndex')) || 0
 const selectedIndex = ref(null);
 const isFinished = ref(localStorage.getItem('isFinished') === 'true'); // ✅ récupère depuis localStorage
 const timer = ref(JSON.parse(localStorage.getItem('timer')) || 10);
+const studentTimerCount = ref(JSON.parse(localStorage.getItem('studentTimerCount')) || 0);
 let interval = null;
 
 const selectedAnswer = ref(null);
@@ -36,10 +37,27 @@ console.log(questions.value);
 
 
 localStorage.setItem('total', localStorage.getItem('total') || 0);
+localStorage.setItem('studentTimerCount', localStorage.getItem('studentTimerCount') || 0);
 
 //SUBMISSION
 const total = ref(JSON.parse(localStorage.getItem('total')) || 0);
 const anwerChoose = ref(null);
+
+const finalSum = computed(() => total.value.toFixed(2));
+
+
+function formatSeconds(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    if (minutes > 0) {
+        return `${minutes} minutes ${remainingSeconds} secondes`;
+    }
+
+    return `${remainingSeconds} secondes`;
+}
+
+
 
 // Fonction pour démarrer le test
 const handleStart = () => {
@@ -78,6 +96,8 @@ const startTimer = () => {
 
     interval = setInterval(() => {
         timer.value--;
+        studentTimerCount.value++;
+        localStorage.setItem('studentTimerCount', studentTimerCount.value);
         localStorage.setItem('timer', timer.value);
 
         if (timer.value <= 0) {
@@ -85,6 +105,9 @@ const startTimer = () => {
             goToNextQuestion();
         }
     }, 1000);
+
+    console.log(total.value);
+
 };
 
 const goToNextQuestion = () => {
@@ -92,6 +115,7 @@ const goToNextQuestion = () => {
 
     // Vérifie la réponse de la question actuelle AVANT de passer à la suivante
     const currentQuestion = questions.value[questionIndex.value];
+    selectedIndex.value = null
 
     if (!selectedAnswer.value) {
         toast("😓 Oups! Veuillez sélectionner une réponse", {
@@ -127,6 +151,7 @@ const goToNextQuestion = () => {
         localStorage.setItem('isFinished', true);
         localStorage.removeItem('questionIndex');
         localStorage.removeItem('timer');
+        localStorage.removeItem('total');
 
         // Enregistrement des résultats
         form.post(route('account.test.storeTestStory', props.activityType), {
@@ -142,6 +167,7 @@ const goToNextQuestion = () => {
         form.post(route('account.test.submission', {
             activityType: props.activityType,
             total: total.value,
+            time: formatSeconds(studentTimerCount.value),
         }), {
             onSuccess: () => {
                 toast("Résultat soumis", {
@@ -153,6 +179,9 @@ const goToNextQuestion = () => {
                 // Reset complet
                 localStorage.setItem('total', 0);
                 localStorage.setItem('isFinished', false);
+                localStorage.setItem('studentTimerCount', 0);
+
+                // router.visit(route('account.test.show', props.activities));
             },
         });
     }
@@ -162,6 +191,8 @@ const goToNextQuestion = () => {
 const handleSetIsFinishedFalse = () => {
     isFinished.value = false;
     localStorage.setItem('isFinished', false);
+    localStorage.setItem('studentTimerCount', 0);
+    localStorage.setItem('total', 0);
     router.visit(route('account.test.show', props.activities));
 };
 
@@ -278,7 +309,6 @@ onMounted(() => {
                     <div class="mt-5">
                         <button
                             class="btn-primary btn"
-                            :disabled="questionIndex >= questions.length - 1"
                             @click="goToNextQuestion">
                             Suivant &nbsp; <i class="pi pi-arrow-right"></i>
                         </button>

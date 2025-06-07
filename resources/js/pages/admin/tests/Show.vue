@@ -1,6 +1,6 @@
 <script setup>
 import SubTitle from '@/components/SubTitle.vue';
-import { Link, useForm } from '@inertiajs/vue3';
+import { Link, useForm, Head } from '@inertiajs/vue3';
 import { Activity } from 'lucide-vue-next';
 import { watch } from 'vue';
 import { ref , onMounted} from 'vue';
@@ -156,6 +156,9 @@ console.log(activityTypes);
 </script>
 
 <template>
+<Head :title="`${activityItem?.title} | Tests`" />
+
+
 <div class="flex items-center justify-between">
     <div>
         <SubTitle class="flex gap-4 items-center">

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Activities;
 use App\Models\ActivityType;
+use App\Models\Question;
+use App\Support\StrHelper;
 use Illuminate\Http\Request;
 
 class ActivityTypeController extends Controller
@@ -30,7 +32,7 @@ class ActivityTypeController extends Controller
         ActivityType::create([
             'activity_id' => $activity->id,
             'name' => $request->name,
-            'slug' => ActivityType::slug($request->name),
+            'slug' => StrHelper::slug($request->name),
         ]);
 
          return to_route('admin.activities.show',  $activity);

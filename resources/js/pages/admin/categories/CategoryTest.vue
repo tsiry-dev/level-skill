@@ -1,8 +1,9 @@
 <script setup>
 import SubTitle from '@/components/SubTitle.vue';
-import { Link, useForm, router } from '@inertiajs/vue3';
+import { Link, useForm, router, Head } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import { toast } from "vue3-toastify";
+import FormModal from '@/components/FormModal.vue';
 
 
 const props = defineProps({
@@ -14,22 +15,20 @@ const props = defineProps({
 
 const form = useForm({
     name: '',
-    description: '',
 });
 
 
 const categoryTests = computed(() => props.categoryTests || []);
 
 const isActiveModal = ref(false);
+const categoryEdit = ref(null);
 
 
 function openModal() {
     isActiveModal.value = true;
+    form.reset();
 }
 
-function closeModal() {
-    isActiveModal.value = false;
-}
 
 function handleSubmit() {
 
@@ -74,10 +73,48 @@ function handleDestroy(categoryTest) {
 
 console.log(categoryTests.value);
 
+const handleEdit = (category) => {
+   categoryEdit.value = category;
+   isActiveModal.value = true;
+   form.name = category.name;
+   form.description = category.description;
+
+   console.log(categoryEdit);
+}
+
+const handleUpdate = (category) => {
+   form.put(route('admin.categories.update', category), {
+        preserveScroll: true,
+        preserveState: true, // 👍 nécessaire pour garder les erreurs visibles
+        onSuccess: () => {
+            toast("Catégorie mise à jour avec succès", {
+                theme: "colored",
+                type: "success",
+                autoClose: 3000,
+            });
+            isActiveModal.value = false;
+            categoryEdit.value = null;
+            form.reset();
+            router.reload({
+               only: ['categoryTests'],
+            });
+        },
+    });
+}
+
+
+
+const handleCloseModal = () => {
+    isActiveModal.value = false;
+    categoryEdit.value = null;
+    form.reset();
+}
 
 </script>
 
 <template>
+<Head  title="Categories" />
+
 <div class="flex items-center justify-between">
     <SubTitle>
        Categories
@@ -117,30 +154,24 @@ console.log(categoryTests.value);
             <Link :href="route('admin.categories.show', categoryTest)" class="">
                 <i class="pi pi-eye text-green-500 text-lg cursor-pointer"></i>
             </Link>
-          <i class="pi pi-pen-to-square text-blue-500 text-lg cursor-pointer"></i>
           <i
-          @click.prevent="handleDestroy(categoryTest)"
-          class="pi pi-trash text-red-600 text-lg cursor-pointer"></i>
+             @click.prevent="handleEdit(categoryTest)"
+             class="pi pi-pen-to-square text-blue-500 text-lg cursor-pointer"></i>
+          <i
+            @click.prevent="handleDestroy(categoryTest)"
+            class="pi pi-trash text-red-600 text-lg cursor-pointer"></i>
         </td>
       </tr>
     </tbody>
   </table>
 
-
-    <div
-     v-if="isActiveModal"
-     :class="`${isActiveModal ? 'anime' : ''} bg-green-100 border-1 border-gray-300 rounded-md p-5 fixed top-[5rem] left-[50%] translate-x-[-50%] z-100 w-[40rem]`">
-        <div class="flex justify-between">
-            <h2>Créer une catégorie</h2>
-            <button
-            @click="closeModal"
-            class="btn btn-error">
-            <i class="pi pi-times-circle"></i>
-        </button>
-        </div>
-
-        <form @submit.prevent="handleSubmit">
-            <div>
+        <FormModal
+         :title="`${categoryEdit ? 'Modifier' : 'Ajouter'} une catégorie`"
+         :isActive="isActiveModal"
+         @close-modal-form="handleCloseModal"
+      >
+        <form @submit.prevent="categoryEdit ? handleUpdate(categoryEdit) : handleSubmit">
+            <div class="mb-3">
                 <label for="name" class="label-text">Category</label>
                 <input
                     v-model="form.name"
@@ -153,25 +184,15 @@ console.log(categoryTests.value);
                 <span class="text-red-500 text-sm" v-if="form.errors.name">{{ form.errors.name }}</span>
             </div>
 
-            <div class="w-full">
-                <label class="label-text" for="textareaLabel">Description</label>
-                <textarea
-                    v-model="form.description"
-                    class="textarea"
-                    placeholder="Décrire ..."
-                    id="textareaLabel">
-                </textarea>
-                <span class="text-red-500 text-sm" v-if="form.errors.description">{{ form.errors.description }}</span>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Ajouter</button>
+            <button type="submit" class="btn btn-primary">
+                {{ categoryEdit ? 'Modifier' : 'Ajouter' }}
+            </button>
         </form>
-    </div>
-
+    </FormModal>
 </div>
 </template>
 
-<style scoped>
+<style >
 .anime {
     animation: fadeIn 0.3s ease-in-out;
 }

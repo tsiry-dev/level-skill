@@ -1,8 +1,9 @@
 <script setup>
 
 import SubTitle from '@/components/SubTitle.vue';
-import { computed } from 'vue';
-import { Link } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import { Head, Link, useForm } from '@inertiajs/vue3';
+import FormModal from '@/components/FormModal.vue';
 
 const props = defineProps({
     categoryTest: Object,
@@ -11,14 +12,36 @@ const props = defineProps({
     ziggy: Object,
 });
 
+const form = useForm({
+    name: '',
+});
+
 const activities = computed(() => props.categoryTest?.activities || []);
 
-console.log(props.categoryTest);
+const isActiveModal = ref(false);
+
+const handleDelete = (data) => {
+    // activityTypes.destroy
+    console.log(data);
+
+}
+
+
+function openModal() {
+    isActiveModal.value = true;
+    form.reset();
+}
+
+const handleCloseModal = () => {
+    isActiveModal.value = false;
+    form.reset();
+}
 
 
 </script>
 
 <template>
+    <Head :title="`${categoryTest?.name} | Categories`" />
 
 <div class="flex items-center justify-between">
     <SubTitle>
@@ -42,9 +65,9 @@ console.log(props.categoryTest);
     <tbody>
       <tr v-for="activity in activities" :key="activity.id">
         <td >
-            <span  class="underline underline-offset-2">
+            <Link :href="route('admin.activities.show', activity)"  class="underline underline-offset-2">
                 {{ activity?.title }}
-            </span>
+            </Link>
         </td>
         <td>
           <span
@@ -54,16 +77,37 @@ console.log(props.categoryTest);
           </span>
         </td>
         <td class="flex items-center gap-2">
-            <span class="">
+            <Link :href="route('admin.activities.show', activity)"  class="underline underline-offset-2">
                 <i class="pi pi-eye text-green-500 text-lg cursor-pointer"></i>
-            </span>
-          <i class="pi pi-pen-to-square text-blue-500 text-lg cursor-pointer"></i>
-          <i
-          class="pi pi-trash text-red-600 text-lg cursor-pointer"></i>
+            </Link>
         </td>
       </tr>
     </tbody>
   </table>
+
+
+    <FormModal
+         title="Modifier"
+         :isActive="isActiveModal"
+         @close-modal-form="handleCloseModal"
+      >
+        <form @submit.prevent="handleSubmit">
+            <div class="mb-3">
+                <label for="name" class="label-text">Titre</label>
+                <input
+                    v-model="form.name"
+                    type="text"
+                    name="name"
+                    class="input"
+                    id="name"
+                    placeholder="Nom de la catégorie"
+                >
+                <span class="text-red-500 text-sm" v-if="form.errors.name">{{ form.errors.name }}</span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+        </form>
+    </FormModal>
 
 </template>
 

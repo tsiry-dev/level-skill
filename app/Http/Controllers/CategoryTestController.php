@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CategoryTest;
+use App\Support\StrHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -40,20 +41,30 @@ class CategoryTestController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:category_tests,name',
-            'description' => 'required|string|max:255',
         ], [
             'name.required' => 'Le nom est requis',
-            'description.required' => 'La description est requis',
             'name.unique' => 'Ce category existe déjà',
         ]);
 
 
         CategoryTest::create([
             'name' => $validated['name'],
-            'slug' => Str::slug($validated['name']) .'-'. time() . mt_rand(200, 1500),
-            'description' => $validated['description'],
+            'slug' => StrHelper::slug($validated['name']),
         ]);
 
+    }
+
+    public function update(CategoryTest $categoryTest)
+    {
+        $validated = request()->validate([
+           'name' => 'required|string|max:255|unique:category_tests,name',
+        ]);
+
+         $categoryTest->update([
+             'name' => request()->name,
+             'slug' => StrHelper::slug(request()->name),
+         ]);
+         return to_route('admin.categories.index');
     }
 
     public function destroy(CategoryTest $categoryTest)

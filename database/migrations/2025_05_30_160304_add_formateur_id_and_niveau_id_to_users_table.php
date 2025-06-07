@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->foreignId('formateur_id')->nullable()->after('id');
-            $table->foreignId('niveau_id')->nullable()->after('id');
-
             $table->foreign('formateur_id')->references('id')->on('formateurs')->nullOnDelete();
+
+            $table->foreignId('niveau_id')->nullable()->after('id');
             $table->foreign('niveau_id')->references('id')->on('niveaux')->nullOnDelete();
 
         });

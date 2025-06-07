@@ -1,9 +1,12 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { Link, Head } from '@inertiajs/vue3';
 
 </script>
 
 <template>
+
+<Head title="Home" />
+
     <div class="max-w-[70rem] mx-auto mt-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
               <div class="p-9 bg-purple-700 rounded-2xl">
@@ -19,7 +22,7 @@ import { Link } from '@inertiajs/vue3';
 
                   <div class="mt-6">
                       <Link :href="route('login')" class="w-[100%] btn btn-gradient btn-secondary mb-4">Conexion</Link>
-                      <Link :href="route('login')" class="w-[100%] btn btn-gradient btn-secondary">Inscription</Link>
+                      <Link :href="route('register')" class="w-[100%] btn btn-gradient btn-secondary">Inscription</Link>
                   </div>
               </div>
         </div>

@@ -1,6 +1,6 @@
 <script setup>
 import SubTitle from '@/components/SubTitle.vue';
-import { Link, useForm } from '@inertiajs/vue3';
+import { Link, useForm , Head} from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { toast } from "vue3-toastify";
 
@@ -43,6 +43,9 @@ const submit = () => {
 </script>
 
 <template>
+<Head title="New tests" />
+
+
 <div class="flex items-center justify-between">
     <SubTitle>
         Nouveau test

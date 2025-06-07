@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Activities;
 use App\Models\CategoryTest;
+use App\Support\StrHelper;
 use Illuminate\Http\Request;
 
 class TestController extends Controller
@@ -46,7 +47,7 @@ class TestController extends Controller
         Activities::create([
             'category_test_id' => $request->type,
             'title' => $request->title,
-            'slug' => \Illuminate\Support\Str::slug($request->title) . '-' . time(),
+            'slug' => StrHelper::slug($request->title),
             'description' => $request->description,
         ]);
 

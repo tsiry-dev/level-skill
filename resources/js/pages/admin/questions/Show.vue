@@ -1,7 +1,7 @@
 <script setup>
 import SubTitle from '@/components/SubTitle.vue';
-import { onMounted, ref, watch } from 'vue';
-import { Link , useForm} from '@inertiajs/vue3';
+import { onMounted, ref, computed } from 'vue';
+import { Link , useForm, Head} from '@inertiajs/vue3';
 import { toast } from "vue3-toastify";
 import { useModalStore } from '@/stores/modal';
 import Modal from '@/components/Modal.vue';
@@ -19,6 +19,10 @@ const form = useForm({
 });
 
 const formResponse = useForm();
+
+const countQuestionForm = useForm({
+    question_count: 0,
+});
 
 
 
@@ -62,6 +66,21 @@ const response4 = ref({
     answer: '',
     is_correct: false,
 });
+const response5 = ref({
+    answer: '',
+    is_correct: false,
+});
+
+const responseArr = computed(() => [
+    response1.value,
+    response2.value,
+    response3.value,
+    response4.value,
+    response5.value
+]);
+
+console.log(responseArr.value);
+
 
 onMounted(() => {
     questions.value = props.activityType.questions;
@@ -82,6 +101,7 @@ const activeResposeForm = (question) => {
 
 
 const handleCreateQuestion = () => {
+
     form.post(
         route('admin.questions.store', {
             activityType: props.activityType.slug,
@@ -109,7 +129,8 @@ const handleCreateResponse = (question) => {
         !response1.value.answer.trim() &&
         !response2.value.answer.trim() &&
         !response3.value.answer.trim() &&
-        !response4.value.answer.trim()
+        !response4.value.answer.trim() &&
+        !response5.value.answer.trim()
     ){
         toast("Vous devez ajouter au moins une réponse", {
             "theme": "colored",
@@ -120,13 +141,60 @@ const handleCreateResponse = (question) => {
         return;
     }
 
+     if([response1.value, response2.value, response3.value, response4.value,response5.value].filter(response => response.answer.trim() !== '').length < 3){
+        toast("Vous devez ajouter au moins 3 réponses", {
+            "theme": "colored",
+            "type": "error",
+            "autoClose": 3000,
+            "dangerouslyHTMLString": true
+        });
+        return;
+    }
+
+     if(
+       ![response1.value ?? '', response2.value ?? '', response3.value ?? '', response4.value ?? '', response5.value ?? '']
+       .map(r => r.answer)
+       .find(r => r.trim() === correctResponse.value)
+     ){
+
+        toast("Vous devez ajouter la bonne réponse", {
+            "theme": "colored",
+            "type": "error",
+            "autoClose": 3000,
+            "dangerouslyHTMLString": true
+        });
+        return;
+
+     }
+
+
+
+    //Verify response not contains empty
+    const nonEmptyAnswers = responseArr.value
+    .map(res => res.answer.trim())
+    .filter(answer => answer !== '');
+
+    // vérify if there is duplicate
+    const hasDuplicates = new Set(nonEmptyAnswers).size !== nonEmptyAnswers.length;
+
+    if (hasDuplicates) {
+        toast('Les réponses doivent être uniques', {
+            theme: "colored",
+            type: "error",
+            autoClose: 3000,
+            dangerouslyHTMLString: true
+        });
+        return;
+    }
+
 
 
     let responses = [
         response1.value,
         response2.value,
         response3.value,
-        response4.value
+        response4.value,
+        response5.value
     ].filter(response => response.answer.trim() !== '');
 
     // const index = questions.value.findIndex((q) => q.id === question.id);
@@ -161,6 +229,7 @@ const handleCreateResponse = (question) => {
             response2.value.answer = '';
             response3.value.answer = '';
             response4.value.answer = '';
+            response5.value.answer = '';
             correctResponse.value = '';
         },
         preserveScroll: true,
@@ -201,10 +270,39 @@ const handleToggleModalLimitQuestion = () => {
     isOpenModalLimitQuestion.value = !isOpenModalLimitQuestion.value;
 }
 
+const handleLimitQuestion = () => {
+    console.log(countQuestionForm.question_count);
+    console.log(props.activityType);
+
+    countQuestionForm.patch(route('admin.questions.updateCount', {
+        activityType: props.activityType,
+        question_count: countQuestionForm.question_count
+    }), {
+        onSuccess: () => {
+            toast("Limiter les questions avec succès", {
+                "theme": "colored",
+                "type": "success",
+                "autoClose": 3000,
+                "dangerouslyHTMLString": true
+            });
+            isOpenModalLimitQuestion.value = false;
+        },
+        preserveScroll: true,
+        preserveState: true,
+    });
+
+}
+
+
+console.log(new Set([2,6,3]).size !== 3);
+
+
 
 </script>
 
 <template>
+<Head :title="`${activityType?.name} | Questions`" />
+
     <div class="flex items-center justify-between">
         <div>
             <SubTitle class="flex gap-4 items-center">
@@ -285,42 +383,6 @@ const handleToggleModalLimitQuestion = () => {
                                 id="floatingInput"
                             />
                         </div>
-                        <div class="absolute z-10 right-[50%] top-[50%] translate-x-[50%] bg-green-900 h-[2rem] w-[2rem] text-white flex items-center justify-center text-2xl rounded-full">
-                            <i class="pi pi-arrow-circle-right"></i>
-                        </div>
-                        <div class="flex-1 relative z-0">
-                            <label class="text-sm">Unité</label>
-                            <select class="input" v-model="form.unit">
-                                <option value="s" selected>Secondes</option>
-                                <option value="m">Minutes</option>
-                                <option value="h">Heures</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div>
-                        <label for="floatingInput" class="text-sm">Points</label>
-                        <input
-                            max="20"
-                            min="1"
-                            type="number"
-                            placeholder="Points..."
-                            class="input"
-                            v-model="form.point"
-                            id="floatingInput"
-                        />
-                    </div>
-                    <div class="col-span-2">
-                        <label class="custom-soft-option flex flex-row items-start gap-3 sm:w-1/2">
-                            <input type="checkbox" v-model="form.is_response_ia" class="checkbox checkbox-primary mt-2" checked />
-                            <span class="label-text w-full text-start">
-                            <span class="flex justify-between mb-1">
-                                <span class="text-base font-medium">IA</span>
-                            </span>
-                            <span class="text-base-content/80">
-                                Correction et donation de pointt automatique de la question
-                            </span>
-                            </span>
-                        </label>
                     </div>
                 </div>
                 <div class="mt-4">
@@ -370,10 +432,12 @@ const handleToggleModalLimitQuestion = () => {
 
                             <div class="ml-5 mb-2">
                                 <div class="flex gap-2 items-center">
+                                    <span class="badge bg-error" v-if="question.answers.length >= 3">Ok</span>
                                     <span
+                                    v-else
                                         @click.prevent="activeResposeForm(question)"
                                         class="text-sm badge bg-success cursor-pointer flex items-center gap-2">
-                                            Ajouter une réponse
+                                            Ajouteé des réponses
                                     </span>
                                 </div>
                                 <hr class="my-2">
@@ -414,8 +478,7 @@ const handleToggleModalLimitQuestion = () => {
             <ul>
                 <li class="text-3xl">Statistiques des questions</li>
                 <li class="text-white text-xl">Nombres des questions ({{ questions.length }})</li>
-                <li class="text-white text-xl">Somes des points ({{ questions.reduce((a, b) => a + b.point, 0) }} / 20)</li>
-                <li class="text-white text-xl">Total timer (4 minutes)</li>
+                <li class="text-white text-xl">Questions à répondre ({{ activityType.nb_question }})</li>
             </ul>
         </div>
 
@@ -462,6 +525,11 @@ const handleToggleModalLimitQuestion = () => {
                     <input type="text" v-model="response4.answer" class="input" placeholder="Réponse 4">
                 </div>
 
+                <div>
+                    <label for="" class="text-sm">Réponse 4</label>
+                    <input type="text" v-model="response5.answer" class="input" placeholder="Réponse 4">
+                </div>
+
                 <div class="mt-4">
                     <button class="btn btn-gradient btn-success">Sauvegarder</button>
                 </div>
@@ -472,16 +540,19 @@ const handleToggleModalLimitQuestion = () => {
 
     <div v-if="isOpenModalLimitQuestion" class="fixed w-[30rem] top-15 left-[50%] translate-x-[-50%] bg-white border-1 border-gray-400 z-10 p-4 rounded-lg">
          <div class="flex justify-between">
-            <h2 class="text-lg">Limiter la question à répondre</h2>
+            <h2 class="text-lg">Limiter les questions à répondre</h2>
             <button @click="isOpenModalLimitQuestion=false" class="btn btn-gradient btn-error">Fermer</button>
          </div>
 
-         <form class="mt-8">
+         <form
+             @submit.prevent="handleLimitQuestion"
+            class="mt-8">
             <div>
                 <p for="" class="text-sm">
                     Vous avez {{ questions.length }} Disponible,Limiter les ci dessous <i class="text-red-500 pi pi-info-circle"></i>
                 </p>
-                <input type="number" name="" class="input" placeholder="Limiter à" id="">
+                <input v-model="countQuestionForm.question_count" type="number" name="" class="input" placeholder="Limiter à" id="">
+                <span class="text-red-500 text-sm" v-if="countQuestionForm.errors.question_count">{{ countQuestionForm.errors.question_count }}</span>
             </div>
 
             <div class="mt-3">

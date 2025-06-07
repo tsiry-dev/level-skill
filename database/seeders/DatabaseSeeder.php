@@ -86,7 +86,7 @@ class DatabaseSeeder extends Seeder
             ActivityType::factory(mt_rand(2, 4))->create([
                 'activity_id' => $activity->id,
             ])->each(function ($activityType) {
-                    Question::factory(mt_rand(50, 300))->create([
+                    Question::factory(mt_rand(5, 10))->create([
                         'activity_type_id' => $activityType->id,
                     ])->each(function ($question) {
                         $numAnswers = mt_rand(4, 6);

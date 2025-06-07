@@ -2,32 +2,31 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Formateur;
+use App\Models\Niveau;
 use App\Support\StrHelper;
+use Illuminate\Http\Request;
 
-class FormateurController extends Controller
+class NiveauController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-
-
-
-        return inertia('admin/formateurs/Formateur', [
-            'formateurs' => Formateur::withCount('users')->get()
+        return inertia('admin/niveaux/Niveaux', [
+            'niveaux' => Niveau::withCount('users')->get()
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+
+
+
     }
 
     /**
@@ -36,14 +35,12 @@ class FormateurController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'profile' => ['required', 'string']
+            'title' => 'required|string|max:255',
         ]);
 
-        Formateur::create([
-            'name' => $validated['name'],
-            'slug' => StrHelper::slug($validated['name']),
-            'profile' => $validated['profile']
+        Niveau::create([
+            'title' => $validated['title'],
+            'slug' => StrHelper::slug($validated['title']),
         ]);
     }
 
@@ -66,20 +63,19 @@ class FormateurController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Formateur $formateur)
+    public function update(Request $request, Niveau $niveau)
     {
-        $formateur->update([
-           'name' => $request->name,
-           'slug' => StrHelper::slug($request->name),
-           'profile' => $request->profile
+        $niveau->update([
+            'title' => $request->title,
+            'slug' => StrHelper::slug($request->title)
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Formateur $formateur)
+    public function destroy(Niveau $niveau)
     {
-        $formateur->delete();
+        $niveau->delete();
     }
 }

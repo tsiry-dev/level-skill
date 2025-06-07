@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('question');
-            $table->integer('point');
+            $table->float('point');
             $table->integer('timer');
             $table->boolean('is_response_ia')->default(0);
 

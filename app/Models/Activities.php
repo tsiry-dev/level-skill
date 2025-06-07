@@ -19,6 +19,11 @@ class Activities extends Model
         'description'
     ];
 
+    // protected $with = [
+    //     'activityTypes',
+    //     'categoryTest'
+    // ];
+
     const ACTIVITIES = [
         [
             'title' => 'Quiz',
@@ -28,16 +33,16 @@ class Activities extends Model
             'updated_at' => null,
         ],
         [
-            'title' => 'Writting',
-            'slug' => 'writting',
-            'description' => 'Writting description',
+            'title' => 'Connaissance génerale',
+            'slug' => 'connaissance generale',
+            'description' => 'CG',
             'created_at' => null,
             'updated_at' => null,
         ],
         [
-            'title' => 'Redaction',
-            'slug' => 'redaction',
-            'description' => 'redaction description',
+            'title' => 'Verbe',
+            'slug' => 'verbe-01245',
+            'description' => 'Verbe et conjugaison',
             'created_at' => null,
             'updated_at' => null,
         ],

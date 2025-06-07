@@ -63,7 +63,7 @@ const submit = () => {
                 >
                     <option disabled value="">-- Choisissez un niveau --</option>
                     <option v-for="niveau in niveaux" :key="niveau.id" :value="niveau.id">
-                        {{ niveau.libelle || niveau.id }}
+                        {{ niveau.title || '' }}
                     </option>
                 </select>
                 <InputError :message="form.errors.niveau_id" />

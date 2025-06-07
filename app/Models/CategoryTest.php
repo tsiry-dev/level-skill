@@ -22,16 +22,12 @@ class CategoryTest extends Model
             'slug' => 'Quiz'
         ],
         [
-            'name' => 'Writting',
-            'slug' => 'writting'
+            'name' => 'Connaissance génerale',
+            'slug' => 'connaissance-generale'
         ],
         [
             'name' => 'Conjugaison',
             'slug' => 'conjugaison'
-        ],
-        [
-            'name' => 'Questionnaire',
-            'slug' => 'questionnaire'
         ]
     ];
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ActivityType extends Model
 {
@@ -13,7 +14,7 @@ class ActivityType extends Model
     protected $fillable = [
         'name',
         'slug',
-        'activity_id'
+        'activity_id',
     ];
 
     public function getRouteKeyName()
@@ -48,7 +49,12 @@ class ActivityType extends Model
 
     public function questions()
     {
-        return $this->hasMany(Question::class, 'activity_type_id');
+        return $this->hasMany(Question::class, 'activity_type_id')->orderBy('created_at', 'desc');
+    }
+
+    public function categoryTest(): BelongsTo
+    {
+       return $this->belongsTo(CategoryTest::class, 'category_test_id');
     }
 
 }
